@@ -1,0 +1,7 @@
+{
+  "current_stop_index": -1,
+  "target_stop_index": -1,
+  "phase": "greeting",
+  "visited_stops": [],
+  "dwell_times": {}
+}
