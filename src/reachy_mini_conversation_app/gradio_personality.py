@@ -27,6 +27,11 @@ class PersonalityUI:
         # Constants and paths
         self.DEFAULT_OPTION = "(built-in default)"
         self._profiles_root = DEFAULT_PROFILES_DIRECTORY
+        self._external_profiles_root: Path | None = (
+            config.PROFILES_DIRECTORY
+            if config.PROFILES_DIRECTORY != DEFAULT_PROFILES_DIRECTORY
+            else None
+        )
         self._tools_dir = Path(__file__).parent / "tools"
         self._prompts_dir = Path(__file__).parent / "prompts"
 
@@ -60,9 +65,23 @@ class PersonalityUI:
                             names.append(f"user_personalities/{p.name}")
         except Exception:
             pass
+        # Also include external profiles that are not already listed
+        if self._external_profiles_root is not None:
+            try:
+                if self._external_profiles_root.exists():
+                    for p in sorted(self._external_profiles_root.iterdir()):
+                        if p.is_dir() and (p / "instructions.txt").exists() and p.name not in names:
+                            names.append(p.name)
+            except Exception:
+                pass
         return names
 
     def _resolve_profile_dir(self, selection: str) -> Path:
+        # Prefer the external profiles directory when the profile exists there
+        if self._external_profiles_root is not None:
+            external_path = self._external_profiles_root / selection
+            if external_path.is_dir():
+                return external_path
         return self._profiles_root / selection
 
     def _read_instructions_for(self, name: str) -> str:
@@ -98,10 +117,18 @@ class PersonalityUI:
                 shared.append(py.stem)
         except Exception:
             pass
+        # Also include tools from the external tools directory
+        if config.TOOLS_DIRECTORY is not None:
+            try:
+                for py in config.TOOLS_DIRECTORY.glob("*.py"):
+                    if not py.stem.startswith("_") and py.stem not in shared:
+                        shared.append(py.stem)
+            except Exception:
+                pass
         local: list[str] = []
         try:
             if selected != self.DEFAULT_OPTION:
-                for py in (self._profiles_root / selected).glob("*.py"):
+                for py in self._resolve_profile_dir(selected).glob("*.py"):
                     local.append(py.stem)
         except Exception:
             pass

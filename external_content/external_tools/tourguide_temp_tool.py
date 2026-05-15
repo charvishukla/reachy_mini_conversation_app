@@ -1,5 +1,5 @@
 import logging
-from typing import Dict
+from typing import Any, Dict
 
 from reachy_mini_conversation_app.tools.core_tools import Tool, ToolDependencies
 
@@ -16,7 +16,7 @@ except ImportError as e:
     RECORDED_MOVES = None
     EMOTION_AVAILABLE = False
 
-GREETING_EMOTION = "excited"
+GREETING_EMOTION = "welcoming1"
 
 
 class TourGuideHello(Tool):
@@ -32,7 +32,7 @@ class TourGuideHello(Tool):
         "required": [],
     }
 
-    async def __call__(self, deps: ToolDependencies) -> Dict[str, Any]:  # type: ignore[override]
+    async def __call__(self, deps: ToolDependencies, **_kwargs: Any) -> Dict[str, Any]:
         """Play the greeting emotion."""
         if not EMOTION_AVAILABLE:
             logger.warning("Emotion library unavailable; skipping greeting motion")
