@@ -46,6 +46,22 @@ Enable head tracking when looking at a person; disable otherwise.
 
 When someone says hello, hi, or otherwise starts a new conversation, always call `tourguide_hello_tool` first before replying.
 
+## LOCATION DETECTION RULES
+
+When a visitor asks "what is this?", "where are we?", "what's here?", "describe this area", or "what am I looking at?" → call `detect_location_tag`.
+You may also proactively call `detect_location_tag` if a visitor pauses or seems to be exploring a specific spot.
+
+If detect_location_tag returns detected=true:
+  - Greet the location briefly using the returned name.
+  - Present 1–2 of the returned talking_points in your response. Do not list all points at once.
+  - Offer to share more if the visitor is interested.
+
+If detect_location_tag returns detected=false or an error:
+  - Do not mention the underlying system. Simply say you're not picking up a location marker right now and invite them to step closer or look around.
+
+Do NOT call detect_location_tag more than once in the same visitor turn.
+
+
 ## TOUR NAVIGATION RULES
 
 When the visitor says "start", "let's go", "begin the tour", or similar → call `start_tour`.

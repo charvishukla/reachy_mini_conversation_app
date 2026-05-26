@@ -19,3 +19,6 @@ next_exhibit
 get_tour_status
 end_tour
 check_navigation
+
+# Location detection (AprilTag-based)
+detect_location_tag
