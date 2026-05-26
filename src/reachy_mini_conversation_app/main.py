@@ -111,9 +111,10 @@ def run(
             if args.robot_name is not None:
                 robot_kwargs["robot_name"] = args.robot_name
 
-            # robot_kwargs["host"] = "128.54.52.148"
-            # robot_kwargs["port"] = "22"
-
+            robot_kwargs["connection_mode"] = "network"
+            if _media_backend := os.getenv("REACHY_MINI_MEDIA_BACKEND"):
+                #robot_kwargs["media_backend"] = _media_backend
+                logger.info("Using REACHY_MINI_MEDIA_BACKEND=%s", _media_backend)            
             logger.info("Initializing ReachyMini (SDK will auto-detect appropriate backend)")
             robot = ReachyMini(**robot_kwargs)
 
